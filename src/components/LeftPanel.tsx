@@ -17,11 +17,16 @@ export default function LeftPanel({ toggleCard, card }: LeftPanelProps) {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const buttonClasses = (link: string) =>
-    `flex items-center text-lg bg-transparent w-full p-2 rounded-xl border-t-2 border-l-2 border-b-4 border-r-4 border-current ${
-      card === link
+  /**
+   * Edit the buttons based on the pressed one
+   * @param link Current link content that showing
+   * @returns a class with the css to apply for the button
+   */
+  const buttonClasses = (link: string) => 
+    `flex items-center text-lg w-full p-2 rounded-xl border-t-2 border-l-2 border-b-4 border-r-4 border-current ${
+      card === link 
         ? "bg-custom-gray border-b-2 border-r-2"
-        : "hover:bg-custom-gray hover:border-b-2 hover:border-r-2"
+        : "bg-transparent hover:bg-custom-gray hover:border-b-2 hover:border-r-2"
     }`;
 
   /**
