@@ -9,7 +9,7 @@ module.exports = {
         "custom-gray": "#D6D6D6",
         "custom-dark-translucent": "rgba(19, 21, 21, 0.5)",
         "custom-white": "#F0F0F0",
-        "custom-salmon": "#DE807C",
+        "custom-rose": "#B3A8AC",
         "custom-yellow": "#F3CC91",
         "pastel-pink": "#FFD1DC",
         "custom-blue": "#83A2C3",
