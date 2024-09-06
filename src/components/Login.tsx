@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { login } from "../services/loginService";
 
-export default function Login() {
+// Define types props
+type LoginProps = {
+  handleLoggedIn: () => void;
+};
+
+export default function Login({ handleLoggedIn }: LoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -22,6 +27,8 @@ export default function Login() {
         password,
       });
       localStorage.setItem("userId", userId);
+      handleLoggedIn();
+      window.location.reload();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
