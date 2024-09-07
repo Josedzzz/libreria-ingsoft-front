@@ -1,261 +1,78 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookCard from "./BookCard";
 import BookInfo, { BookInfoProps, Review } from "./BookInfo";
 
-const booksData: (BookInfoProps & { reviews: Review[] })[] = [
-  {
-    title: "The Great Gatsby",
-    author: "F. Scott Fitzgerald",
-    isbn: "9780743273565",
-    rating: 4.5,
-    cover: "/path/to/great-gatsby-cover.jpg",
-    year: 1925,
-    reviews: [
-      {
-        user: "Alice",
-        review: "A classic novel with beautiful prose.",
-        rating: 5,
-      },
-      {
-        user: "Bob",
-        review: "Fascinating look at the American Dream.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    isbn: "9780060935467",
-    rating: 4.8,
-    cover: "/path/to/mockingbird-cover.jpg",
-    year: 1960,
-    reviews: [
-      {
-        user: "Charlie",
-        review: "An impactful story about justice and morality.",
-        rating: 5,
-      },
-      { user: "David", review: "A powerful and moving read.", rating: 4 },
-    ],
-  },
-  {
-    title: "1984",
-    author: "George Orwell",
-    isbn: "9780451524935",
-    rating: 4.7,
-    cover: "/path/to/1984-cover.jpg",
-    year: 1949,
-    reviews: [
-      {
-        user: "Eve",
-        review: "A chilling depiction of a dystopian future.",
-        rating: 5,
-      },
-      {
-        user: "Frank",
-        review: "Orwell's vision of totalitarianism is eerily relevant today.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "Brave New World",
-    author: "Aldous Huxley",
-    isbn: "9780060850524",
-    rating: 4.6,
-    cover: "/path/to/brave-new-world-cover.jpg",
-    year: 1932,
-    reviews: [
-      {
-        user: "Grace",
-        review: "A thought-provoking novel about a future society.",
-        rating: 5,
-      },
-      {
-        user: "Hank",
-        review:
-          "Huxley’s critique of consumerism and conformity is eye-opening.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "Moby Dick",
-    author: "Herman Melville",
-    isbn: "9781503280786",
-    rating: 4.3,
-    cover: "/path/to/moby-dick-cover.jpg",
-    year: 1851,
-    reviews: [
-      {
-        user: "Ivy",
-        review: "A complex and rich narrative about obsession.",
-        rating: 4,
-      },
-      {
-        user: "Jack",
-        review:
-          "Melville’s detailed descriptions are both fascinating and overwhelming.",
-        rating: 3,
-      },
-    ],
-  },
-  {
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    isbn: "9780141439518",
-    rating: 4.9,
-    cover: "/path/to/pride-and-prejudice-cover.jpg",
-    year: 1813,
-    reviews: [
-      {
-        user: "Laura",
-        review: "A timeless romance with sharp social commentary.",
-        rating: 5,
-      },
-      {
-        user: "Michael",
-        review: "A delightful read with witty dialogue.",
-        rating: 5,
-      },
-    ],
-  },
-  {
-    title: "The Catcher in the Rye",
-    author: "J.D. Salinger",
-    isbn: "9780316769488",
-    rating: 4.4,
-    cover: "/path/to/catcher-in-the-rye-cover.jpg",
-    year: 1951,
-    reviews: [
-      {
-        user: "Nina",
-        review: "A gripping portrayal of teenage angst.",
-        rating: 4,
-      },
-      {
-        user: "Oscar",
-        review: "Salinger’s writing style is unique and engaging.",
-        rating: 5,
-      },
-    ],
-  },
-  {
-    title: "The Hobbit",
-    author: "J.R.R. Tolkien",
-    isbn: "9780345339683",
-    rating: 4.8,
-    cover: "/path/to/the-hobbit-cover.jpg",
-    year: 1937,
-    reviews: [
-      {
-        user: "Paul",
-        review: "A fantastical adventure that’s perfect for all ages.",
-        rating: 5,
-      },
-      {
-        user: "Quinn",
-        review: "Tolkien’s world-building is incredible.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "Fahrenheit 451",
-    author: "Ray Bradbury",
-    isbn: "9781451673319",
-    rating: 4.5,
-    cover: "/path/to/fahrenheit-451-cover.jpg",
-    year: 1953,
-    reviews: [
-      {
-        user: "Rita",
-        review: "A powerful critique of censorship and conformity.",
-        rating: 5,
-      },
-      {
-        user: "Steve",
-        review: "Bradbury’s vision of the future is hauntingly realistic.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "Animal Farm",
-    author: "George Orwell",
-    isbn: "9780451526342",
-    rating: 4.6,
-    cover: "/path/to/animal-farm-cover.jpg",
-    year: 1945,
-    reviews: [
-      {
-        user: "Tina",
-        review: "A brilliant allegory about power and corruption.",
-        rating: 5,
-      },
-      {
-        user: "Ursula",
-        review: "Orwell’s satire is sharp and thought-provoking.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "Les Misérables",
-    author: "Victor Hugo",
-    isbn: "9780451419439",
-    rating: 4.7,
-    cover: "/path/to/les-miserables-cover.jpg",
-    year: 1862,
-    reviews: [
-      {
-        user: "Vera",
-        review: "A sweeping epic about redemption and justice.",
-        rating: 5,
-      },
-      {
-        user: "William",
-        review: "Hugo’s storytelling is both grand and intimate.",
-        rating: 4,
-      },
-    ],
-  },
-  {
-    title: "The Odyssey",
-    author: "Homer",
-    isbn: "9780143039952",
-    rating: 4.6,
-    cover: "/path/to/the-odyssey-cover.jpg",
-    year: -800,
-    reviews: [
-      {
-        user: "Xena",
-        review: "A classic epic that’s still captivating today.",
-        rating: 5,
-      },
-      {
-        user: "Yannis",
-        review: "The adventure and mythological elements are timeless.",
-        rating: 4,
-      },
-    ],
-  },
-];
+interface Book {
+  id: string;
+  isbn: string;
+  bookTitle: string;
+  bookAuthor: string;
+  averageRating: number;
+  imageUrl: string;
+  yearOfPublication: string;
+  reviews: Review[];
+}
+
+interface FetchBooksResponse {
+  content: Book[];
+  totalPages: number;
+}
 
 export default function Library() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [booksToDisplay, setBooksToDisplay] =
-    useState<(BookInfoProps & { reviews: Review[] })[]>(booksData);
+  const [booksToDisplay, setBooksToDisplay] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<BookInfoProps | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchBooks = async (searchTerm: string = "", page: number = 0) => {
+    setLoading(true);
+    try {
+      const url = searchTerm
+        ? `http://localhost:8080/books/search?keyword=${encodeURIComponent(
+            searchTerm
+          )}&page=${page}&size=20`
+        : `http://localhost:8080/books?page=${page}&size=20`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Error fetching books: ${response.status} - ${errorText}`
+        );
+      }
+      const data: FetchBooksResponse = await response.json();
+      console.log("Fetched books:", data);
+
+      // Verifica que data.content sea un array
+      if (Array.isArray(data.content)) {
+        setBooksToDisplay(data.content);
+        setTotalPages(data.totalPages || 1);
+      } else {
+        console.error("Unexpected data format:", data);
+        setBooksToDisplay([]);
+      }
+    } catch (error) {
+      console.error("Error fetching books", error);
+      setBooksToDisplay([]); // Asegúrate de que sea un array vacío en caso de error
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchBooks("", page); // Fetch books when page changes
+  }, [page]);
 
   const handleSearch = () => {
-    const filteredBooks = booksData.filter(
-      (book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setBooksToDisplay(filteredBooks);
+    fetchBooks(searchTerm);
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages - 1) setPage(page + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (page > 0) setPage(page - 1);
   };
 
   return (
@@ -280,24 +97,59 @@ export default function Library() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {booksToDisplay.length > 0 ? (
-              booksToDisplay.map((book) => (
-                <div key={book.isbn} onClick={() => setSelectedBook(book)}>
-                  <BookCard
-                    title={book.title}
-                    author={book.author}
-                    isbn={book.isbn}
-                    rating={book.rating}
-                    cover={book.cover}
-                    year={book.year}
-                  />
-                </div>
-              ))
-            ) : (
-              <p>No books found.</p>
-            )}
-          </div>
+          {loading ? (
+            <p>Loading books...</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {booksToDisplay.length > 0 ? (
+                  booksToDisplay.map((book) => (
+                    <div
+                      key={book.isbn}
+                      onClick={() =>
+                        setSelectedBook({
+                          isbn: book.isbn,
+                          bookTitle: book.bookTitle,
+                          bookAuthor: book.bookAuthor,
+                          averageRating: book.averageRating,
+                          imageUrl: book.imageUrl,
+                          yearOfPublication: book.yearOfPublication,
+                          reviews: book.reviews,
+                        })
+                      }
+                    >
+                      <BookCard
+                        title={book.bookTitle}
+                        author={book.bookAuthor}
+                        isbn={book.isbn}
+                        rating={book.averageRating}
+                        cover={book.imageUrl}
+                        year={parseInt(book.yearOfPublication, 10)}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p>No books found.</p>
+                )}
+              </div>
+              <div className="flex justify-between mt-6">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={page === 0}
+                  className="p-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-white hover:bg-custom-gray focus:outline-none hover:border-b-2 hover:border-r-2"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={handleNextPage}
+                  disabled={page === totalPages - 1}
+                  className="p-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-white hover:bg-custom-gray focus:outline-none hover:border-b-2 hover:border-r-2"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

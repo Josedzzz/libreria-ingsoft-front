@@ -5,22 +5,22 @@ export type Review = {
 };
 
 export type BookInfoProps = {
-  title: string;
-  author: string;
   isbn: string;
-  rating: number;
-  cover: string;
-  year: number;
+  bookTitle: string;
+  bookAuthor: string;
+  averageRating: number;
+  imageUrl: string;
+  yearOfPublication: string;
   reviews: Review[];
 };
 
 export default function BookInfo({
-  title,
-  author,
+  bookTitle,
+  bookAuthor,
   isbn,
-  rating,
-  cover,
-  year,
+  averageRating,
+  imageUrl,
+  yearOfPublication,
   reviews,
   onBack,
 }: BookInfoProps & { onBack: () => void }) {
@@ -34,16 +34,16 @@ export default function BookInfo({
       </button>
       <div className="flex flex-col md:flex-row items-start md:items-center mb-6">
         <img
-          src={cover}
-          alt={title}
+          src={imageUrl}
+          alt={bookTitle}
           className="w-full md:w-48 h-auto object-cover rounded-xl mb-4 md:mb-0"
         />
         <div className="md:ml-6 flex-1">
-          <h1 className="text-3xl font-bold text-custom-dark mb-2">{title}</h1>
-          <p className="text-custom-dark mb-1">by {author}</p>
+          <h1 className="text-3xl font-bold text-custom-dark mb-2">{bookTitle}</h1>
+          <p className="text-custom-dark mb-1">by {bookAuthor}</p>
           <p className="text-custom-dark mb-1">ISBN: {isbn}</p>
-          <p className="text-custom-dark mb-1">Year: {year}</p>
-          <p className="text-custom-dark mb-4">Rating: {rating} / 5</p>
+          <p className="text-custom-dark mb-1">Year: {yearOfPublication}</p>
+          <p className="text-custom-dark mb-4">Rating: {averageRating} / 5</p>
         </div>
       </div>
 
