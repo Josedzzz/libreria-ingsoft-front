@@ -53,15 +53,6 @@ export default function LeftPanel({
       </li>
       <li>
         <button
-          onClick={() => toggleCard("mybooks")}
-          className={buttonClasses("mybooks")}
-        >
-          <i className="fa-solid fa-book-open mr-4"></i>
-          {isPanelVisible && <h2 className="font-bold">My Books</h2>}
-        </button>
-      </li>
-      <li>
-        <button
           onClick={() => {
             localStorage.removeItem("userId");
             handleLoggedOut();
