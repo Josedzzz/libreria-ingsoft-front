@@ -1,17 +1,19 @@
+import { useState, useEffect } from "react";
+
 export type Review = {
-  user: string;
-  review: string;
-  rating: number;
+  reviewer: string;
+  comment: string;
 };
 
 export type BookInfoProps = {
+  id: string;
   isbn: string;
   bookTitle: string;
   bookAuthor: string;
   averageRating: number;
   imageUrl: string;
   yearOfPublication: string;
-  reviews: Review[];
+  reviews: { reviewer: string; comment: string }[];
 };
 
 export default function BookInfo({
@@ -24,6 +26,43 @@ export default function BookInfo({
   reviews,
   onBack,
 }: BookInfoProps & { onBack: () => void }) {
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [showRatingForm, setShowRatingForm] = useState(false);
+  const [newReview, setNewReview] = useState({
+    user: "",
+    review: "",
+    rating: 0,
+  });
+
+  // State to handle the visibility of buttons
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if userId exists in localStorage and update the state accordingly
+    const userId = localStorage.getItem("userId");
+    setIsUserLoggedIn(!!userId);
+  }, []);
+
+  const handleAddReview = () => {
+    setShowReviewForm(true);
+    setShowRatingForm(false); // Hide rating form if visible
+  };
+
+  const handleAddRating = () => {
+    setShowRatingForm(true);
+    setShowReviewForm(false); // Hide review form if visible
+  };
+
+  const handleReviewSubmit = () => {
+    // Submit the review (you'll handle this with the backend)
+    setShowReviewForm(false);
+  };
+
+  const handleRatingSubmit = () => {
+    // Submit the rating (you'll handle this with the backend)
+    setShowRatingForm(false);
+  };
+
   return (
     <div className="bg-custom-white p-6 rounded-xl border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark flex flex-col items-start max-w-screen-lg mx-auto animate-fadeIn">
       <button
@@ -32,6 +71,7 @@ export default function BookInfo({
       >
         &larr; Back to Library
       </button>
+
       <div className="flex flex-col md:flex-row items-start md:items-center mb-6">
         <img
           src={imageUrl}
@@ -39,7 +79,9 @@ export default function BookInfo({
           className="w-full md:w-48 h-auto object-cover rounded-xl mb-4 md:mb-0"
         />
         <div className="md:ml-6 flex-1">
-          <h1 className="text-3xl font-bold text-custom-dark mb-2">{bookTitle}</h1>
+          <h1 className="text-3xl font-bold text-custom-dark mb-2">
+            {bookTitle}
+          </h1>
           <p className="text-custom-dark mb-1">by {bookAuthor}</p>
           <p className="text-custom-dark mb-1">ISBN: {isbn}</p>
           <p className="text-custom-dark mb-1">Year: {yearOfPublication}</p>
@@ -47,22 +89,88 @@ export default function BookInfo({
         </div>
       </div>
 
-      <div className="w-full">
+      {/* Conditionally render Add Review and Add Rating buttons */}
+      {isUserLoggedIn && (
+        <div className="mt-6 flex space-x-4">
+          <button
+            onClick={handleAddReview}
+            className="px-4 py-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-blue text-custom-white hover:border-b-2 hover:border-r-2"
+          >
+            Add Review
+          </button>
+
+          <button
+            onClick={handleAddRating}
+            className="px-4 py-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-blue text-custom-white hover:border-b-2 hover-border-r-2"
+          >
+            Add Rating
+          </button>
+        </div>
+      )}
+
+      {showReviewForm && (
+        <div className="mt-4 p-4 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-light">
+          <h3 className="text-lg font-bold text-custom-dark mb-4">
+            Write your review
+          </h3>
+          <textarea
+            placeholder="Your review"
+            value={newReview.review}
+            onChange={(e) =>
+              setNewReview({ ...newReview, review: e.target.value })
+            }
+            className="mb-4 p-2 border rounded w-full"
+          ></textarea>
+          <button
+            onClick={handleReviewSubmit}
+            className="px-4 py-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-blue text-custom-white hover:border-b-2 hover-border-r-2"
+          >
+            Submit Review
+          </button>
+        </div>
+      )}
+
+      {showRatingForm && (
+        <div className="mt-4 p-4 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-light">
+          <h3 className="text-lg font-bold text-custom-dark mb-4">
+            Rate this book
+          </h3>
+          <input
+            type="number"
+            placeholder="Rating (0-5)"
+            value={newReview.rating}
+            onChange={(e) =>
+              setNewReview({ ...newReview, rating: +e.target.value })
+            }
+            className="mb-4 p-2 border rounded w-full"
+            max={5}
+            min={0}
+          />
+          <button
+            onClick={handleRatingSubmit}
+            className="px-4 py-2 border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark rounded-xl bg-custom-blue text-custom-white hover:border-b-2 hover-border-r-2"
+          >
+            Submit Rating
+          </button>
+        </div>
+      )}
+
+      {/* Reviews now rendered after the buttons */}
+      <div className="w-full mt-6">
         <h2 className="text-xl font-bold text-custom-dark mb-4">
           User Reviews
         </h2>
         <div className="space-y-4">
           {reviews.length > 0 ? (
-            reviews.map((review: Review, index: number) => (
+            reviews.map((review, index) => (
               <div
                 key={index}
                 className="bg-custom-light p-4 rounded-xl border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark"
               >
-                <p className="text-custom-dark font-semibold">{review.user}</p>
-                <p className="text-custom-dark mt-1">
-                  Rating: {review.rating} / 5
+                <p className="text-custom-dark font-semibold">
+                  {review.reviewer}
                 </p>
-                <p className="text-custom-dark mt-1">{review.review}</p>
+                <p className="text-custom-dark mt-1">{review.comment}</p>
               </div>
             ))
           ) : (
