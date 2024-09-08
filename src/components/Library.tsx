@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import BookCard from "./BookCard";
-import BookInfo, { BookInfoProps, Review } from "./BookInfo";
+import BookInfo, { BookInfoProps } from "./BookInfo";
 
 interface Book {
   id: string;
@@ -10,7 +10,7 @@ interface Book {
   averageRating: number;
   imageUrl: string;
   yearOfPublication: string;
-  reviews: Review[];
+  reviews: { reviewer: string; comment: string }[];
 }
 
 interface FetchBooksResponse {
@@ -105,9 +105,10 @@ export default function Library() {
                 {booksToDisplay.length > 0 ? (
                   booksToDisplay.map((book) => (
                     <div
-                      key={book.isbn}
+                      key={book.id}
                       onClick={() =>
                         setSelectedBook({
+                          id: book.id,
                           isbn: book.isbn,
                           bookTitle: book.bookTitle,
                           bookAuthor: book.bookAuthor,
