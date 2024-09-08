@@ -17,13 +17,14 @@ export type BookInfoProps = {
 };
 
 export default function BookInfo({
+  id,
   bookTitle,
   bookAuthor,
   isbn,
   averageRating,
   imageUrl,
   yearOfPublication,
-  reviews,
+  reviews: initialReviews,
   onBack,
 }: BookInfoProps & { onBack: () => void }) {
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -53,14 +54,78 @@ export default function BookInfo({
     setShowReviewForm(false); // Hide review form if visible
   };
 
-  const handleReviewSubmit = () => {
-    // Submit the review (you'll handle this with the backend)
-    setShowReviewForm(false);
+  const handleReviewSubmit = async () => {
+    if (!isUserLoggedIn) {
+      alert("You need to be logged in to add a review.");
+      return;
+    }
+
+    try {
+      const userId = localStorage.getItem("userId");
+      const reviewData = {
+        reviewer: userId || "anonymous",
+        comment: newReview.review,
+      };
+
+      const response = await fetch(`http://localhost:8080/books/${id}/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reviewData),
+      });
+
+      if (response.ok) {
+        alert("Review submitted successfully!");
+        window.location.reload(); // Reload the page to reflect changes
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+      alert("Failed to submit review.");
+    }
   };
 
-  const handleRatingSubmit = () => {
-    // Submit the rating (you'll handle this with the backend)
-    setShowRatingForm(false);
+  const handleRatingSubmit = async () => {
+    if (!isUserLoggedIn) {
+      alert("You need to be logged in to add a rating.");
+      return;
+    }
+
+    if (newReview.rating < 1 || newReview.rating > 5) {
+      alert("Rating must be between 1 and 5.");
+      return;
+    }
+
+    try {
+      const userId = localStorage.getItem("userId");
+
+      const ratingData = {
+        userId: userId || "anonymous",
+        rating: newReview.rating,
+      };
+
+      const response = await fetch(`http://localhost:8080/books/${id}/rate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ratingData),
+      });
+
+      if (response.ok) {
+        alert("Rating submitted successfully!");
+        window.location.reload(); // Reload the page to reflect changes
+      } else {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+      alert("Failed to submit rating.");
+    }
   };
 
   return (
@@ -137,14 +202,14 @@ export default function BookInfo({
           </h3>
           <input
             type="number"
-            placeholder="Rating (0-5)"
+            placeholder="Rating (1-5)"
             value={newReview.rating}
             onChange={(e) =>
               setNewReview({ ...newReview, rating: +e.target.value })
             }
             className="mb-4 p-2 border rounded w-full"
             max={5}
-            min={0}
+            min={1}
           />
           <button
             onClick={handleRatingSubmit}
@@ -161,8 +226,8 @@ export default function BookInfo({
           User Reviews
         </h2>
         <div className="space-y-4">
-          {reviews.length > 0 ? (
-            reviews.map((review, index) => (
+          {initialReviews.length > 0 ? (
+            initialReviews.map((review, index) => (
               <div
                 key={index}
                 className="bg-custom-light p-4 rounded-xl border-t-2 border-l-2 border-b-4 border-r-4 border-custom-dark"
