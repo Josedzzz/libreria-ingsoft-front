@@ -30,7 +30,7 @@ export default function Library() {
     setLoading(true);
     try {
       const url = searchTerm
-        ? `http://localhost:8080/books/search?keyword=${encodeURIComponent(
+        ? `http://localhost:8080/books/searchAv?keyword=${encodeURIComponent(
             searchTerm
           )}&page=${page}&size=20`
         : `http://localhost:8080/books?page=${page}&size=20`;
